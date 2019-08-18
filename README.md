@@ -1,9 +1,3 @@
-### Supplementary Materials for "Unsupervised word embeddings capture latent knowledge from materials science literature", *Nature*  571, 95–98 (2019).
-#### Tshitoyan, V., Dagdelen, J., Weston, L., Dunn, A., Rong, Z., Kononova, O., Persson, K. A., Ceder, G. and Jain, A. 
-doi: [10.1038/s41586-019-1335-8](https://www.nature.com/articles/s41586-019-1335-8)
-
-A view-only (no download) link to the paper: https://rdcu.be/bItqk
-
 ### Set up
 
 1. Make sure you have `python3.6` and the `pip` module installed. 
