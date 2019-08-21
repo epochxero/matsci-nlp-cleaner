@@ -3,7 +3,7 @@ from mat2vec.processing import MaterialsTextProcessor
 text_processor = MaterialsTextProcessor()
 
 
-with open("MSP1.txt", "r", encoding="utf8") as text, open("ProcessedText.txt", "w+", encoding="utf8") as CleanText, open("NormalisedMaterials.txt", "w+", encoding="utf8") as NormalisedMaterials:
+with open("Paper.txt", "r", encoding="utf8") as text, open("ProcessedText.txt", "w+", encoding="utf8") as CleanText, open("NormalisedMaterials.txt", "w+", encoding="utf8") as NormalisedMaterials:
 
     text_string = text.read()
     processed_text = text_processor.process(text_string, exclude_punct = True, make_phrases = True)
