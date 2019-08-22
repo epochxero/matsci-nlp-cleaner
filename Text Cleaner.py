@@ -5,7 +5,7 @@ papers = []
 
 for paper in papers:
     
-    with open("%s.txt" % paper, "r", encoding="utf8") as text, open("CleanedText%s.txt" paper, "w+", encoding="utf8") as CleanText, open("NormalisedMaterials%s.txt" % paper, "w+", encoding="utf8") as NormalisedMaterials:
+    with open("%s.txt" % paper, "r", encoding="utf8") as text, open("CleanedText%s.txt" % paper, "w+", encoding="utf8") as CleanText, open("NormalisedMaterials%s.txt" % paper, "w+", encoding="utf8") as NormalisedMaterials:
 
         text_string = text.read()
         processed_text = text_processor.process(text_string, exclude_punct = True, make_phrases = True)
