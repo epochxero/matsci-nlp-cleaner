@@ -26,7 +26,7 @@ for paper in papers:
 
 #Output final data frame
 location = ""
-processed_data = {"DOIs": DOIs, "Publication Dates": pub_dates, "Processed Text": processed_texts, "Normalised Materials": norm_mats}
-final_df = pd.DataFrame(processed_data, columns = ["DOIs", "Publication Dates", "Processed Text", "Normalised Materials"], index = None)
+processed_data = {"DOIs": DOIs, "Publication Dates": pub_dates, "Titles": titles, "Processed Text": processed_texts, "Normalised Materials": norm_mats}
+final_df = pd.DataFrame(processed_data, columns = ["DOIs", "Publication Dates", "Titles", "Processed Text", "Normalised Materials"], index = False)
 final_df.to_csv(r"%s" % location)
 
