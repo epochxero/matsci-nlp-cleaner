@@ -8,50 +8,56 @@ import pandas as pd
 initial_df = pd.read_csv('DataSet.csv', encoding="utf8")
 initial_df = initial_df[~pd.isna(initial_df["Unnamed: 0.1.1"]) & ~pd.isna(initial_df["Title"])]
 
-#Iterates through the rows of the data frame; if references are absent, and the text/abstract is trivial, then remove the row.
+#Iterate through the rows of the data frame; if references are absent, and the text/abstract is trivial, then remove the row.
 #If references are absent, and the text is non-trivial, scan for references in the text and split it. Reference sections are not updated.
 
 ref_synonyms = ["references:", "references", "reference:", "reference:", "bibliography", "bibliography:", "bibliographies:", "bibliographies",
                 "reference list:", "reference list", "citations:", "citations"]
 
+
 for row in initial_df.itertuples():
 
     if pd.isna(row[6]) and (not pd.isna(row[5]) or not pd.isna(row[3])):
-                                                 
-      if len(row[5]) <= 100 and pd.isna(row[3]):
+          
+        if not pd.isna(row[5]):
+            
+            if len(row[5]) <= 100 and pd.isna(row[3]):
 
-          initial_df.drop(row[0], inplace = True)
+                initial_df.drop(row[0], inplace = True)
 
-      else:
-                                                     
-          text = row[5].lower()
-          ref_found = False
+            elif len(row[5]) <= 100 and not pd.isna(row[3]):
 
-          for synonym in ref_synonyms:
-
-             if synonym in text and not ref_found:
-
-                 syn_indices = [match.start() for match in regex.finditer(synonym, text)]
-
-                 for syn_index in syn_indices:
-
-                     subtext = text[syn_index:]
-
-                     if len(subtext.split()) <= 300:
-
-                         ref_found = not ref_found
-                         new_text = text[:syn_index]
-                         initial_df.at[row[0], "Title"] = new_text
-                      
-                         break
-
-             elif ref_found:
-
-                 break
-                                     
+                initial_df.at[row[0], "Title"] = " "
         
+            else:
+                                                     
+                text = row[5].lower()
+                ref_found = False
+
+                for synonym in ref_synonyms:
+
+                   if synonym in text and not ref_found:
+    
+                       syn_indices = [match.start() for match in regex.finditer(synonym, text)]
+
+                       for syn_index in syn_indices:
+
+                           subtext = text[syn_index:]
+
+                           if len(subtext.split()) <= 300:
+
+                               ref_found = not ref_found
+                               new_text = text[:syn_index]
+                               initial_df.at[row[0], "Title"] = new_text
+                      
+                               break
+
+                   elif ref_found:
+
+                       break
+                            
                                                                                                     
-#Extracts relevant material from initial_df
+#Extracts relevant material from .csv file
 
 row_count = len(initial_df.index)
 titles = (initial_df['Unnamed: 0.1'].head(row_count))
