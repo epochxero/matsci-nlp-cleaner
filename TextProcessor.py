@@ -1,6 +1,5 @@
 from mat2vec.processing import MaterialsTextProcessor
 import pandas as pd
-from langdetect import detect
 
 #Preliminary cleaning of the data set; splits references based on length, removes empty/trivial rows.
 #Code for data frame columns: 0- DOI, 1- Title, 2- Abstract, 3- Date, 4- Text, 5- References
