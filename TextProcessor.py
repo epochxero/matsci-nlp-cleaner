@@ -64,7 +64,6 @@ def processFile(filename, output_path):
                                 
                                                                                                         
     #Extracts relevant material from .csv file
-
     row_count = len(initial_df.index)
     titles = (initial_df['Unnamed: 0.1'].head(row_count))
     abstracts, full_texts, references = (initial_df['Unnamed: 0.1.1'].head(row_count), initial_df['Title'].head(row_count), initial_df["Abstract"].head(row_count))
