@@ -1,6 +1,9 @@
 from mat2vec.processing import MaterialsTextProcessor
 import pandas as pd
-import langdetect
+
+#Function to split references from texts, remove trivial/empty entries, and process texts.
+#Args: filename: Name of .csv file, e.g. "FullTexts.csv"
+#      output_path: Path of the output file as a raw string literal: e.g. r"C:\Users\...\small_dataframe_100_cleaned.csv"
 
 def processFile(filename, output_path):
 
@@ -91,4 +94,4 @@ def processFile(filename, output_path):
     final_df = pd.DataFrame(processed_data, columns = ["DOIs", "Publication Dates", "Titles", "Processed Text", "Normalised Materials"])
     final_df.to_csv(output_path, index = False)
 
-#processFile('small_dataframe_100.csv', 'cleaned.csv')
+#processFile('small_dataframe_100.csv', r'C:\Users\...\small_dataframe_100_cleaned.csv')
