@@ -1,5 +1,6 @@
 from mat2vec.processing import MaterialsTextProcessor
 import pandas as pd
+import regex
 
 #Function to split references from texts, remove trivial/empty entries, and process texts.
 #Args: filename: Name of .csv file, e.g. "FullTexts.csv"
