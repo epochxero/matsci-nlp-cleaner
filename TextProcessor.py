@@ -20,7 +20,7 @@ def processFile(filename, output_path):
     #Cols: ['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1.1', 'DOI', 'Title', 'Abstract', 'Publication Date', 'Text', 'References']
 
     initial_df = pd.read_csv(filename, encoding="utf8")
-    initial_df = initial_df.replace([np.inf, -np.inf, np.nan], "")[initial_df["Unnamed: 0.1.1"] != "" & initial_df["Title"] != ""]
+    initial_df = initial_df.replace([np.inf, -np.inf, np.nan], "")[~(initial_df["Unnamed: 0.1.1"] == "") & ~(initial_df["Title"] == "")]
 
     #Iterate through the rows of the data frame; if references are absent, and the text/abstract is trivial, then remove the row.
     #If references are absent, and the text is non-trivial, scan for references in the text and split it. Reference sections are not updated.
