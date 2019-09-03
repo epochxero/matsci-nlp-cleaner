@@ -1,40 +1,43 @@
 from mat2vec.processing import MaterialsTextProcessor
-import pandas as pd
 import regex
+import numpy as np
+import pandas as pd
+
+
+ref_synonyms = ["references:", "references", "reference:", "reference:", "bibliography", "bibliography:", "bibliographies:", "bibliographies",
+                    "reference list:", "reference list", "citations:", "citations"]
 
 #Function to split references from texts, remove trivial/empty entries, and process texts.
 #Args: filename: Name of .csv file, e.g. "FullTexts.csv"
 #      output_path: Path of the output file as a raw string literal: e.g. r"C:\Users\...\small_dataframe_100_cleaned.csv"
 
+
 def processFile(filename, output_path):
 
     #Preliminary cleaning of the data set; splits references based on length, removes empty/trivial rows.
+    #Converts all infinity/nan floats to ""
     #Code for data frame columns: 0- DOI, 1- Title, 2- Abstract, 3- Date, 4- Text, 5- References
     #Cols: ['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1.1', 'DOI', 'Title', 'Abstract', 'Publication Date', 'Text', 'References']
 
     initial_df = pd.read_csv(filename, encoding="utf8")
-    initial_df = initial_df[~pd.isna(initial_df["Unnamed: 0.1.1"]) & ~pd.isna(initial_df["Title"])]
+    initial_df = initial_df.replace([np.inf, -np.inf, np.nan], "")[initial_df["Unnamed: 0.1.1"] != "" & initial_df["Title"] != ""]
 
     #Iterate through the rows of the data frame; if references are absent, and the text/abstract is trivial, then remove the row.
     #If references are absent, and the text is non-trivial, scan for references in the text and split it. Reference sections are not updated.
 
-    ref_synonyms = ["references:", "references", "reference:", "reference:", "bibliography", "bibliography:", "bibliographies:", "bibliographies",
-                    "reference list:", "reference list", "citations:", "citations"]
-
-
     for row in initial_df.itertuples():
 
-        if pd.isna(row[6]) and (not pd.isna(row[5]) or not pd.isna(row[3])):
+        if row[6] == "":
               
-            if not pd.isna(row[5]):
+            if row[5] != "":
                 
-                if len(row[5]) <= 100 and pd.isna(row[3]):
+                if len(row[5]) <= 100 and row[3] == "":
 
                     initial_df.drop(row[0], inplace = True)
 
-                elif len(row[5]) <= 100 and not pd.isna(row[3]):
+                elif len(row[5]) <= 100 and row[3] != "":
 
-                    initial_df.at[row[0], "Title"] = " "
+                    initial_df.at[row[0], "Title"] = ""
             
                 else:
                                                          
@@ -62,8 +65,8 @@ def processFile(filename, output_path):
                        elif ref_found:
 
                            break
-                                
-                                                                                                        
+            
+                                                                                                                    
     #Extracts relevant material from .csv file
     row_count = len(initial_df.index)
     titles = (initial_df['Unnamed: 0.1'].head(row_count))
