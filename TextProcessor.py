@@ -6,6 +6,10 @@ import pandas as pd
 
 ref_synonyms = ["references:", "references", "reference:", "reference:", "bibliography", "bibliography:", "bibliographies:", "bibliographies",
                     "reference list:", "reference list", "citations:", "citations"]
+regex_ref = regex.compile(r"(((([A-Z][a-z]+['s]{0,4})\s([A-Z][a-z]+['s]{0,4}).+([A-Z][a-z]+)(?:[\s.,'\"s]+?)([A-Z][a-z]*?))|(([A-Z][a-z]+)(?:[\s.,'\"s]+?)([A-Z][a-z]*?).+([A-Z][a-z]+['s]{0,4})\s([A-Z][a-z]+['s]{0,4})))|((([A-Z][a-z]+['s]{0,4})\s([A-Z][a-z]+['s]{0,4}).+((\(\d{4}\))|(\d{4}(?=[\s|.]))))|(((\(\d{4}\))|(\d{4}(?=[\s|.]))).+([A-Z][a-z]+['s]{0,4})\s([A-Z][a-z]+['s]{0,4})))|((([A-Z][a-z]+)(?:[\s.,'\"s]+?)([A-Z][a-z]*?).+((\(\d{4}\))|(\d{4}(?=[\s|.]))))|(((\(\d{4}\))|(\d{4}(?=[\s|.]))).+([A-Z][a-z]+)(?:[\s.,'\"s]+?)([A-Z][a-z]*?))))")
+regex_num_ref = regex.compile(r"(\[1(?!\d)[-,\s\d]*?\])([\sA-Za-z\d]*(\[\d[-,\s\d]*?\]))*")
+regex_cite = regex.compile(r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
+
 
 #Function to split references from texts, remove trivial/empty entries, and process texts.
 #Args: filename: Name of .csv file, e.g. "FullTexts.csv"
@@ -14,7 +18,7 @@ ref_synonyms = ["references:", "references", "reference:", "reference:", "biblio
 
 def processFile(filename, output_path):
 
-    #Preliminary cleaning of the data set; splits references based on length, removes empty/trivial rows.
+    #Preliminary cleaning of the data set; splits references based on regex identification and length, removes empty/trivial rows.
     #Converts all infinity/nan floats to ""
     #Code for data frame columns: 0- DOI, 1- Title, 2- Abstract, 3- Date, 4- Text, 5- References
     #Cols: ['Unnamed: 0', 'Unnamed: 0.1', 'Unnamed: 0.1.1', 'DOI', 'Title', 'Abstract', 'Publication Date', 'Text', 'References']
@@ -53,8 +57,17 @@ def processFile(filename, output_path):
                            for syn_index in syn_indices:
 
                                subtext = text[syn_index:]
+                               sample = subtext[:100]
 
-                               if len(subtext.split()) <= 300:
+                               if any([regex_ref.search(sample), regex_num_ref.search(sample), regex_cite.search(sample)]):
+
+                                   ref_found = not ref_found
+                                   new_text = text[:syn_index]
+                                   initial_df.at[row[0], "Title"] = new_text
+                                   
+                                   break
+
+                               elif len(subtext.split()) <= 300:
 
                                    ref_found = not ref_found
                                    new_text = text[:syn_index]
@@ -94,5 +107,6 @@ def processFile(filename, output_path):
     processed_data = {"DOIs": DOIs, "Publication Dates": pub_dates, "Titles": titles, "Processed Text": processed_texts, "Normalised Materials": norm_mats}
     final_df = pd.DataFrame(processed_data, columns = ["DOIs", "Publication Dates", "Titles", "Processed Text", "Normalised Materials"])
     final_df.to_csv(output_path, index = False)
+
 
 #processFile('small_dataframe_100.csv', r'C:\Users\...\small_dataframe_100_cleaned.csv')
